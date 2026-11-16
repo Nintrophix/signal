@@ -1,0 +1,12 @@
+{$SIGNAL_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:8080
+	header {
+		-Server
+		X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
+	}
+	log {
+		output stdout
+		format json
+	}
+}

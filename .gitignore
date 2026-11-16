@@ -1,0 +1,11 @@
+node_modules/
+dist/
+data/
+backups/
+*.db
+*.db-*
+.env
+.env.*
+!.env.example
+coverage/
+*.log

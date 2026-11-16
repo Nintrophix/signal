@@ -1,0 +1,53 @@
+# Default: app bound to localhost only, published through a Cloudflare Tunnel
+# (no inbound ports open at all). See README "Deploy" for Caddy / Tailscale.
+services:
+  app:
+    build: .
+    image: nifty-signal:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      TRUST_PROXY: "true"
+    volumes:
+      - signal-data:/data
+    ports:
+      - "127.0.0.1:8080:8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+
+  # Option A (recommended): Cloudflare Tunnel + Cloudflare Access email allowlist.
+  tunnel:
+    image: cloudflare/cloudflared:2025.11.1
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on: [app]
+    profiles: [tunnel]
+
+  # Option B: Caddy with automatic HTTPS on a public VPS (put Access/Tailscale in front).
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      SIGNAL_DOMAIN: ${SIGNAL_DOMAIN:-signal.example.com}
+    depends_on: [app]
+    profiles: [caddy]
+
+volumes:
+  signal-data:
+  caddy-data:
+  caddy-config:

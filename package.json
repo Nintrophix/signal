@@ -1,0 +1,58 @@
+{
+  "name": "nifty-signal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n web,login,api \"vite build --watch --config vite.config.ts\" \"vite build --watch --config vite.login.config.ts\" \"tsx watch src/server/index.ts\"",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --config vite.config.ts && vite build --config vite.login.config.ts",
+    "build:server": "tsc -p tsconfig.server.json",
+    "start": "node dist/server/server/index.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate",
+    "user:add": "tsx src/server/cli/user.ts add",
+    "user:list": "tsx src/server/cli/user.ts list",
+    "user:disable": "tsx src/server/cli/user.ts disable",
+    "backfill": "tsx src/server/cli/backfill.ts",
+    "db:backup": "tsx src/server/cli/backup.ts",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.5",
+    "@fastify/helmet": "^13.2.0",
+    "@fastify/rate-limit": "^11.2.2",
+    "@fastify/static": "^10.1.11",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@node-rs/argon2": "^2.2.2",
+    "better-sqlite3": "^13.2.0",
+    "drizzle-orm": "^0.45.4",
+    "fastify": "^5.12.8",
+    "kiteconnect": "^5.3.0",
+    "lightweight-charts": "^5.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.7",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.1.3"
+  }
+}
