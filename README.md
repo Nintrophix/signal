@@ -1,0 +1,2 @@
+# signal
+Stock market automator
